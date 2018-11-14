@@ -1,64 +1,69 @@
 #include<iostream>
 using namespace std;
-struct node
+void merge(int l[],int r[],int a[],int n1 )
 {
-    int data;
-    node* l,*r;
-}*root;
-node* createnode(int v)
-{
-    node* temp=new node;
-    temp->data=v;
-    temp->l=NULL;
-    temp->r=NULL;
-    return temp;
-}
-node *search(node* root,int v)
-{
-    if(root==NULL||root->data==v)
-        return root;
-    else if(v>root->data)
-        return search(root->r,v);
-    else return search(root->l,v);
-}
-node* insert1(node* root,int v)
-{
-    if(root==NULL)
+    int nl=n1/2;
+    int nr=n1-nl;
+    int i=0,j=0,k=0;
+    while(i<nl&&j<nr)
     {
-        node* p=createnode(v);
-        return p;
+        if(l[i]<r[j])
+        {
+            a[k++]=l[i];
+            i++;
+        }
+        else
+        {
+            a[k++]=r[j];
+            j++;
+        }
     }
-    else if(v>root->data)
-        root->r=insert1(root->r,v);
-    else root->l=insert1(root->l,v);
-    return root;
-}
-node * inorder(node* root)
-{
-    if(root!=NULL)
+    while(i<nl)
     {
-        inorder(root->l);
-        cout<<root->data<<" ";
-        inorder(root->r);
+        a[k++]=l[i];
+        i++;
+    }
+    while(j<nr)
+    {
+        a[k++]=r[j];
+        j++;
+    }
+
+}
+void mergesort(int a[],int n1)
+{
+    if(n1<2)
+        return;
+    int m=n1/2;
+    int l[m];
+    int r[n1-m];
+    for(int i=0;i<m;i++)
+        l[i]=a[i];
+    for(int i=m;i<n1;i++)
+        r[i-m]=a[i];
+    mergesort(l,m);
+    mergesort(r,n1-m);
+    merge(l,r,a,n1);
+
+}
+void printarray(int a[], int n)
+{
+    for(int i=0;i<n;i++)
+    {
+        cout<<a[i]<<" ";
     }
 }
 int main()
 {
-    root=NULL;
     int n;
-    int c;
     cin>>n;
+    int a[n];
     for(int i=0;i<n;i++)
     {
-        cin>>c;
-        root=insert1(root,c);
+        cin>>a[i];
     }
-    node* t=search(root,88);
-    if(t)
-    {
-        cout<<"Found "<<t->data<<endl;
-    }
-    else
-        cout<<"NOT Found"<<endl;
-    inorder(root);
+    int n1=sizeof(a)/sizeof(a[0]);
+    cout<<"Size is "<<n1<<endl;
+    mergesort(a,n1);
+    printarray(a,n);
 }
